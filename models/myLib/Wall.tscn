@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0.709804, 0, 1, 1 )
+transmission_enabled = true
+transmission = Color( 0.85098, 0.0588235, 0.0588235, 1 )
+
+[sub_resource type="CubeMesh" id=2]
+material = SubResource( 1 )
+
+[node name="Wall" type="Spatial"]
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 10.5788, 0, 0, 0, 10.8075, 0, 0, 0, 1, 0, 10.6966, 0 )
+mesh = SubResource( 2 )
+material/0 = null
+
