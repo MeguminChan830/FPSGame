@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Audio.gd" type="Script" id=1]
+[ext_resource path="res://audio/knife_shot.wav" type="AudioStream" id=2]
+
+[node name="Audio" type="Spatial"]
+script = ExtResource( 1 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 2 )
+autoplay = true
+
+[node name="test" type="Spatial" parent="."]
+

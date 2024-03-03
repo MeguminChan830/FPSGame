@@ -11,6 +11,10 @@ const maxSlopeAngle= 40
 onready var camera= $Rotation_Helper/Camera
 onready var rotationHelper= $Rotation_Helper
 
+var mouse_scroll_value= 0
+var mouse_sesitivity= 0.08
+
+
 var animation_manager
 var current_weapon_name= "unarmed"
 var weapons ={"unarmed": null, "knife": null, "pistol": null, "rifle": null}
@@ -26,12 +30,21 @@ var jumping=false
 var reloading_weapon= false
 
 var fire= false
+var audio = load("res://Audio.tscn")
+
 
 
 
 onready var flash_light= $Rotation_Helper/FlashLight
 
 var sensitivity=0.1
+
+func create_sound(name, position=null):
+	var audio_clone= audio.instance()
+	var scene_root= get_tree().root.get_children()[0]
+	scene_root.add_child(audio_clone)
+	audio_clone.play_sound(name, position)
+
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	animation_manager= $Rotation_Helper/Model/AnimationPlayer
@@ -166,6 +179,18 @@ func process_movement(delta):
 	vel = move_and_slide(vel, Vector3(0, 1, 0), false, 4, deg2rad(maxSlopeAngle))
 	
 func _input(event):
+	if event.button_index== BUTTON_WHEEL_UP or event.button_index== BUTTON_WHEEL_DOWN:
+		if event.button_index == BUTTON_WHEEL_U:
+			mouse_scroll_value += mouse_sesitivity
+		elif event.button_index== BUTTON_WHEEL_DOWN:
+			mouse_scroll_value -= mouse_sesitivity
+		mouse_scroll_value = clamp(mouse_scroll_value, 0, weapon_number_to_name.size()-1)
+		if changing_weapon ==false:
+			if reloading_weapon ==false:
+				var round_mouse_scroll_value= int(round(mouse_scroll_value))
+				if weapon_number_to_name[round_mouse_scroll_value] != current_weapon_name:
+					changing_weapon_name = weapon_number_to_name[round_mouse_scroll_value]
+					changing_weapon= true
 	if event is InputEventKey:
 		if event.scancode == KEY_ESCAPE:
 			get_tree().quit()

@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Run Godot Headless",
+        "type": "shell",
+        "command": "/home/megumin/NotUse/Downloads/Godot_v3.5.3-stable_linux_server.64",
+        "args": [
+          "--path",
+          "/home/megumin/Godot/FPSGame",
+        ],
+        "problemMatcher": []
+      }
+    ]
+  }

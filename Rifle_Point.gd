@@ -19,6 +19,8 @@ var playerNode=null
 func _ready():
 	pass
 func fireWeapon():
+	playerNode.create_sound("rifle_shot", self.global_transform.origin)
+
 	var ray = $RayCast
 	ammo_in_weapon-=1
 	ray.force_raycast_update()
@@ -42,27 +44,28 @@ func unequipWeapon():
 		isWeaponEnabled= false
 	return false
 func reload_weapon():
-    can_reload = false
+	can_reload = false		
 
-    if playerNode.animation_manager.current_state == idle_ani:
-        can_reload = true
+	if playerNode.animation_manager.current_state == idle_ani:
+		can_reload = true
 
-    if spare_ammo <=0 or ammo_in_weapon == ammo_in_mag:
-        can_reload = false
-    if can_reload == true:
-        var ammo_needed = ammo_in_mag - ammo_in_weapon
+	if spare_ammo <=0 or ammo_in_weapon == ammo_in_mag:
+		can_reload = false
+	if can_reload == true:
+		playerNode.create_sound("rifle_reload", self.global_transform.origin)
+		var ammo_needed = ammo_in_mag - ammo_in_weapon
 
-        if spare_ammo >= ammo_needed:
-            spare_ammo -= ammo_needed
-            ammo_in_weapon = ammo_in_mag
-        else:
-            ammo_in_weapon += spare_ammo
-            spare_ammo = 0
-        playerNode.animation_manager.set_animation(RELOADING_ANI)
+		if spare_ammo >= ammo_needed:
+			spare_ammo -= ammo_needed
+			ammo_in_weapon = ammo_in_mag
+		else:
+			ammo_in_weapon += spare_ammo
+			spare_ammo = 0
+		playerNode.animation_manager.set_animation(RELOADING_ANI)
 
-        return true
-    can_reload=true
-    return false
+		return true
+	can_reload= true
+	return false
 
 
 

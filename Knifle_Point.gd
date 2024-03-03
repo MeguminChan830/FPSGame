@@ -22,6 +22,8 @@ func _ready() -> void:
 	pass # Replace with function body.
 	
 func fireWeapon():
+	playerNode.create_sound("knife_shot", self.global_transform.origin)
+
 	var area=$Area
 	var bodies = area.get_overlapping_bodies()
 	for body in bodies:
