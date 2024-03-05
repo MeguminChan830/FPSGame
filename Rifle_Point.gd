@@ -1,6 +1,6 @@
 extends Spatial
 
-const damage= 4
+const damage= 40
 const idle_ani = "Rifle_idle"
 const fire_ani = "Rifle_fire"
 const name_weapon="rifle"
@@ -28,6 +28,8 @@ func fireWeapon():
 		var body= ray.get_collider()
 		if body==playerNode:
 			pass
+		if body.get_parent().get_parent().name=="Turret":
+			body.get_parent().get_parent().bullet_hit(damage, ray.global_transform)
 		elif body.has_method("bullet_hit"):
 			body.bullet_hit(damage, ray.global_transform)
 func equipWeapon():

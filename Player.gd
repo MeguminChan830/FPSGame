@@ -101,7 +101,6 @@ func _physics_process(delta):
 	process_input(delta)
 	process_movement(delta)
 	if grabbed_object==null:
-		
 		process_changing_weapon(delta)
 		process_reloading(delta)
 	processUI()
@@ -360,4 +359,6 @@ func add_ammo(add):
 func _process(delta):
 	var fps = Engine.get_frames_per_second()
 	$HUD/FPS.text= "FPS: "+ str(fps)
-
+	
+func bullet_hit(damage, bullet_hit_pos):
+	health-=damage

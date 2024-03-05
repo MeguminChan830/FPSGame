@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://GodotBatlleBot.scn" type="PackedScene" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://Ammo_Pickup.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Health_Pickup.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Target.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Turret.tscn" type="PackedScene" id=14]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -450,3 +451,5 @@ transform = Transform( -0.0748569, 0, 0.997194, 0, 1, 0, -0.997194, 0, -0.074856
 
 [node name="Circle_Target" parent="." instance=ExtResource( 13 )]
 transform = Transform( 0.845588, 0, -0.533836, 0, 1, 0, 0.533836, 0, 0.845588, -13.3932, 10.0676, 13.3582 )
+
+[node name="Turret" parent="." instance=ExtResource( 14 )]
