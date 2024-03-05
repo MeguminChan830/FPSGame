@@ -26,14 +26,19 @@ material = SubResource( 5 )
 [resource]
 item/0/name = "Door"
 item/0/mesh = SubResource( 2 )
+item/0/mesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 item/0/shapes = [  ]
+item/0/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 item/0/preview = ExtResource( 1 )
 item/1/name = "Wall"
 item/1/mesh = SubResource( 4 )
+item/1/mesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 item/1/shapes = [  ]
+item/1/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 item/1/preview = ExtResource( 1 )
 item/2/name = "Ground"
 item/2/mesh = SubResource( 6 )
+item/2/mesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 item/2/shapes = [  ]
+item/2/navmesh_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 item/2/preview = ExtResource( 1 )
-

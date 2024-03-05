@@ -9,7 +9,7 @@ var ammo_in_weapon = 50
 var spare_ammo = 100
 const ammo_in_mag = 50
 var can_reload =true
-
+var can_refill=true
 
 const RELOADING_ANI= "Rifle_reload"
 
@@ -26,7 +26,9 @@ func fireWeapon():
 	ray.force_raycast_update()
 	if ray.is_colliding():
 		var body= ray.get_collider()
+		print(body.name)
 		if body==playerNode:
+			print("I Am player")
 			pass
 		elif body.has_method("bullet_hit"):
 			body.bullet_hit(damage, ray.global_transform)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://GodotBatlleBot.scn" type="PackedScene" id=2]
@@ -10,6 +10,9 @@
 [ext_resource path="res://result/Lib.tres" type="MeshLibrary" id=8]
 [ext_resource path="res://RigidBodyTest.gd" type="Script" id=9]
 [ext_resource path="res://models/enemy.obj" type="ArrayMesh" id=10]
+[ext_resource path="res://Ammo_Pickup.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Health_Pickup.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Target.tscn" type="PackedScene" id=13]
 
 [sub_resource type="BoxShape" id=1]
 
@@ -20,12 +23,6 @@ albedo_color = Color( 0, 0.764706, 1, 1 )
 material = SubResource( 2 )
 radius = 0.55
 height = 0.98
-
-[sub_resource type="CapsuleShape" id=4]
-height = 8.1
-
-[sub_resource type="BoxShape" id=5]
-extents = Vector3( 1, 0.5, 1 )
 
 [sub_resource type="StyleBoxFlat" id=6]
 bg_color = Color( 0.180392, 0.898039, 0.239216, 1 )
@@ -39,6 +36,9 @@ corner_radius_top_right = 33
 corner_radius_bottom_right = 28
 expand_margin_right = 85.0
 expand_margin_top = 67.0
+
+[sub_resource type="DynamicFont" id=8]
+font_data = ExtResource( 7 )
 
 [sub_resource type="StyleBoxFlat" id=7]
 content_margin_left = 2.0
@@ -56,8 +56,11 @@ expand_margin_right = 1.0
 expand_margin_top = 2.0
 expand_margin_bottom = 3.0
 
-[sub_resource type="DynamicFont" id=8]
-font_data = ExtResource( 7 )
+[sub_resource type="CapsuleShape" id=4]
+height = 8.1
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 1, 0.5, 1 )
 
 [sub_resource type="CubeMesh" id=9]
 
@@ -71,51 +74,42 @@ albedo_color = Color( 0.317647, 0.894118, 0.156863, 1 )
 [sub_resource type="CubeMesh" id=13]
 material = SubResource( 12 )
 
-[sub_resource type="SpatialMaterial" id=18]
-albedo_color = Color( 1, 0, 0, 1 )
-roughness = 0.0
-
-[sub_resource type="BoxShape" id=14]
-
-[sub_resource type="SpatialMaterial" id=19]
-albedo_color = Color( 1, 0, 0, 1 )
+[sub_resource type="SpatialMaterial" id=14]
+albedo_color = Color( 0, 1, 0.368627, 1 )
 roughness = 0.0
 
 [sub_resource type="BoxShape" id=15]
 
-[sub_resource type="ProceduralSky" id=16]
-radiance_size = 0
-sky_top_color = Color( 0.00784314, 0.305882, 0.470588, 1 )
-sky_horizon_color = Color( 0.239216, 0.858824, 1, 1 )
-sky_curve = 0.0636396
-sky_energy = 2.27
-ground_bottom_color = Color( 0.458824, 0.0862745, 0.8, 1 )
-ground_horizon_color = Color( 0.976471, 0.411765, 0.980392, 1 )
-sun_color = Color( 0.0980392, 0.784314, 0.0588235, 1 )
-sun_latitude = 70.0
-sun_longitude = -30.0
-sun_angle_min = 4.8
-sun_angle_max = 129.5
-sun_curve = 0.0466517
-texture_size = 0
+[sub_resource type="SpatialMaterial" id=16]
+albedo_color = Color( 1, 0, 0, 1 )
+roughness = 0.0
 
-[sub_resource type="Environment" id=17]
+[sub_resource type="BoxShape" id=17]
+
+[sub_resource type="ProceduralSky" id=18]
+sky_top_color = Color( 0, 0.329412, 0.505882, 1 )
+sky_horizon_color = Color( 0.494118, 0.768627, 0.984314, 1 )
+ground_bottom_color = Color( 0.168627, 0.619608, 0.32549, 1 )
+ground_horizon_color = Color( 0.317647, 0.937255, 0.32549, 1 )
+sun_latitude = 31.99
+
+[sub_resource type="Environment" id=19]
 background_mode = 2
-background_sky = SubResource( 16 )
-background_sky_custom_fov = 29.6
-background_sky_orientation = Basis( 0.999972, -0.000130978, -0.0075037, 0, 0.999848, -0.0174524, 0.00750485, 0.0174519, 0.99982 )
-background_energy = 2.05
-ambient_light_color = Color( 0.0980392, 0.576471, 0.568627, 1 )
-ambient_light_sky_contribution = 0.85
+background_sky = SubResource( 18 )
 fog_enabled = true
-fog_color = Color( 1, 1, 1, 1 )
-fog_sun_color = Color( 0.388235, 0.258824, 0, 1 )
-fog_depth_curve = 0.406126
+fog_color = Color( 0.756863, 0, 1, 1 )
+fog_sun_color = Color( 0.831373, 0.627451, 0.215686, 1 )
+fog_depth_begin = 30.4
+fog_depth_end = 104.3
+fog_depth_curve = 5.09824
 fog_transmit_enabled = true
-fog_transmit_curve = 0.03125
 fog_height_enabled = true
-fog_height_min = -67.0
-fog_height_curve = 1.51572
+fog_height_min = 39.5
+fog_height_curve = 39.3967
+adjustment_enabled = true
+adjustment_brightness = 1.01
+adjustment_contrast = 1.04
+adjustment_saturation = 1.04
 
 [node name="Main" type="Spatial"]
 
@@ -123,16 +117,18 @@ fog_height_curve = 1.51572
 script = ExtResource( 1 )
 
 [node name="Rotation_Helper" type="Spatial" parent="Player"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0 )
 
 [node name="Camera" type="Camera" parent="Player/Rotation_Helper"]
-transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 12, 0 )
+transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0 )
 
 [node name="Model" parent="Player/Rotation_Helper" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, 0 )
 
 [node name="Gun_Fire_Points" type="Spatial" parent="Player/Rotation_Helper"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, 0 )
 
 [node name="Rifle_Point" type="Spatial" parent="Player/Rotation_Helper/Gun_Fire_Points"]
-editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0 )
 script = ExtResource( 3 )
 
@@ -144,7 +140,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 7.567 )
 script = ExtResource( 4 )
 
 [node name="Knife_Point" type="Spatial" parent="Player/Rotation_Helper/Gun_Fire_Points"]
-editor/display_folded = true
 transform = Transform( 3.08589, 0, 0, 0, 3.10151, 0, 0, 0, 2.98965, 0, 12, 1.966 )
 script = ExtResource( 5 )
 
@@ -156,15 +151,14 @@ transform = Transform( -1.14195, 0, 0, 0, 0.532026, 0, 0, 0, 4.98385, 0, 0, 0.15
 shape = SubResource( 1 )
 
 [node name="Gun_Aim_Point" type="Spatial" parent="Player/Rotation_Helper"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 12 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12 )
 visible = false
 
 [node name="MeshInstance" type="MeshInstance" parent="Player/Rotation_Helper/Gun_Aim_Point"]
 mesh = SubResource( 3 )
-material/0 = null
 
 [node name="FlashLight" type="SpotLight" parent="Player/Rotation_Helper"]
-transform = Transform( -0.999741, 0, 0.0227741, 0, 1, 0, -0.0227741, 0, -0.999741, 0, 10.5702, 0 )
+transform = Transform( -0.999741, 0, 0.0227741, 0, 1, 0, -0.0227741, 0, -0.999741, 0, 0, 0 )
 light_color = Color( 0.117647, 0.941176, 0.0901961, 1 )
 light_energy = 3.1
 spot_range = 21.9
@@ -173,22 +167,13 @@ spot_angle = 42.0
 spot_angle_attenuation = 0.840896
 
 [node name="Grenade_Toss_Pos" type="Spatial" parent="Player/Rotation_Helper"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.4348, 1.26599 )
-
-[node name="Body_CollisionShape" type="CollisionShape" parent="Player"]
-transform = Transform( 1, 0, 0, 0, 0, -1.03362, 0, 1, 0, 0, 6.51878, 0 )
-shape = SubResource( 4 )
-
-[node name="Feet_CollisionShape" type="CollisionShape" parent="Player"]
-transform = Transform( 1.83889, 0, 0, 0, 1, 0, 0, 0, 1.60201, 0, 0.5, 0 )
-shape = SubResource( 5 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.266 )
 
 [node name="HUD" type="Control" parent="Player"]
 margin_right = 40.0
 margin_bottom = 40.0
 
 [node name="Crosshair" type="Control" parent="Player/HUD"]
-editor/display_folded = true
 margin_left = 493.0
 margin_top = 279.631
 margin_right = 533.0
@@ -245,7 +230,6 @@ texture = ExtResource( 6 )
 expand = true
 
 [node name="Panel" type="Control" parent="Player/HUD"]
-editor/display_folded = true
 margin_left = 0.2
 margin_top = 559.165
 margin_right = 40.2
@@ -265,14 +249,14 @@ margin_top = -37.24
 margin_right = 129.41
 margin_bottom = 3.76
 rect_scale = Vector2( 1.3, 1.3 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 8 )
 custom_colors/font_color = Color( 0, 0.858824, 1, 1 )
 custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_x = 1
 custom_constants/line_spacing = 0
 custom_constants/shadow_offset_y = 1
+custom_fonts/font = SubResource( 8 )
+custom_styles/normal = SubResource( 7 )
 text = "Health: 100
 Ammo: 000/000 "
 
@@ -291,15 +275,32 @@ rect_scale = Vector2( 3, 3 )
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "You Died"
 
+[node name="FPS" type="Label" parent="Player/HUD"]
+anchor_right = 0.159
+margin_left = 10.0
+margin_right = 50.072
+margin_bottom = 14.0
+rect_scale = Vector2( 1.58, 1.58 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "hello"
+uppercase = true
+
+[node name="Body_CollisionShape" type="CollisionShape" parent="Player"]
+transform = Transform( 1, 0, 0, 0, 0, -1.03362, 0, 1, 0, 0, 6.51878, 0 )
+shape = SubResource( 4 )
+
+[node name="Feet_CollisionShape" type="CollisionShape" parent="Player"]
+transform = Transform( 1.83889, 0, 0, 0, 1, 0, 0, 0, 1.60201, 0, 0.5, 0 )
+shape = SubResource( 5 )
+
 [node name="Room" type="Spatial" parent="."]
-editor/display_folded = true
 
 [node name="GridMap" type="GridMap" parent="Room"]
 visible = false
 mesh_library = ExtResource( 8 )
 cell_size = Vector3( 1, 1, 1 )
 data = {
-"cells": PoolIntArray( 6, 0, 1, 22, 0, 851969, 24, 0, 851969, 65530, 0, -2146435071, 65531, 0, 1048577, 65566, 0, 0, 131094, 0, 1, 327713, 0, 1, 393240, 0, 1, 393243, 0, 1, 14, 1, 196608, 65519, 1, 851969, 65531, 1, 1048577, 196580, 1, 536870913, 327712, 1, 536870913, 393244, 1, 536870913, 6, 2, 1, 14, 2, -2147287040, 65519, 2, 537722881, 65531, 2, -1609564159, 131063, 2, -2147483646, 196607, 2, 1, 262170, 2, -1610612735, 327711, 2, -1610612735, 393242, 2, 1, 393243, 2, 536870913, 65532, 3, 537919489, 131051, 3, 2, 131052, 3, 536870914, 262170, 3, -2147483647, 327710, 3, -2147483647, 393243, 3, 536870913, 65532, 4, 1048577, 65568, 4, 536870914, 131064, 4, 2, 262171, 4, -2147483647, 5, 5, 536870913, 131091, 5, -1610612735, 131111, 5, -1610612735, 262166, 5, -1610612735, 262171, 5, 1, 262172, 5, 1, 5, 6, 1, 65574, 6, 2, 262167, 6, 1, 262169, 6, 1, 262170, 6, 1, 262171, 6, 536870913, 262172, 6, 1, 65582, 9, 0, 131119, 9, 1, 65563, 10, 0, 131098, 10, 1, 131111, 10, 1, 65562, 11, 2, 65563, 11, 0, 65578, 11, 2, 131119, 11, 0, 131119, 12, 0, 196575, 13, 1, 196605, 14, 536870913, 131045, 15, 536870914, 131048, 16, 536870914, 196586, 16, 536870913, 196603, 17, 536870913, 131044, 18, 2, 131072, 18, 1, 131087, 18, 1, 131096, 18, 0, 196561, 19, 1, 131096, 20, 0, 131099, 20, 1, 131027, 21, 2, 131108, 21, 1, 131118, 21, 0, 131030, 22, 2, 131032, 22, 2, 131095, 23, 0, 65571, 24, 2, 65576, 24, 0, 65578, 24, 0, 65582, 24, 0, 131045, 24, 2, 196570, 24, 1, 131041, 25, 2, 131044, 25, 2, 65562, 26, 2, 65571, 26, 0, 65562, 27, 2, 65567, 27, 2, 131034, 27, 2, 131037, 27, 2, 131040, 27, 2, 131041, 27, 2, 131109, 27, 1, 131041, 28, 2, 131076, 28, 1, 131090, 29, 0, 65579, 31, 2, 131072, 31, 1, 65568, 33, 2, 131102, 33, 1, 131114, 33, 0, 65560, 34, 0, 131084, 34, 0, 131048, 35, 2, 131094, 35, 1, 131080, 36, 0, 131098, 37, 1, 65552, 38, 0, 131044, 38, 2, 131112, 38, 0, 196569, 38, 1, 131114, 41, 0, 131087, 44, 1, 65582, 47, 2, 131092, 47, 1, 131111, 50, 0, 196562, 52, 1, 196550, 53, 1, 65509, 65499, 851969, 65510, 65499, 851969, 65507, 65501, 851969, 65513, 65501, 851969, 65506, 65502, 851969, 65505, 65503, 851969, 65504, 65504, 851969, 65508, 65504, 851969, 65509, 65505, 851969, 11, 65506, 196608, 65501, 65506, 851969, 65513, 65507, 851969, 65501, 65508, 537722881, 65513, 65508, 851969, 65514, 65508, 851969, 196605, 65508, 1, 9, 65509, 537067520, 16, 65509, 196608, 65515, 65509, 851969, 65522, 65509, -1609760767, 131082, 65510, -1610612735, 13, 65511, -1610416128, 65518, 65511, -1609760767, 131045, 65511, 536870914, 131111, 65511, -1610612735, 196579, 65511, 1, 196580, 65511, 1, 65521, 65512, -1609760767, 65557, 65512, 2, 131029, 65512, 536870914, 131030, 65512, -1610612734, 131037, 65512, 536870914, 131052, 65512, -1610612734, 131056, 65512, 536870914, 131105, 65512, -1610612735, 196570, 65512, -1610612735, 196582, 65512, 536870913, 65521, 65513, 851969, 65573, 65513, -1610612734, 65575, 65513, 2, 131059, 65513, -1610612734, 131061, 65513, 2, 131064, 65513, -1610612734, 131104, 65513, 1, 131113, 65513, 536870913, 196570, 65513, 1, 10, 65514, 196608, 65500, 65514, 851969, 65522, 65514, 537722881, 65526, 65514, 851969, 65527, 65514, 851969, 65536, 65514, 2, 65538, 65514, 2, 65541, 65514, 2, 65542, 65514, 2, 65544, 65514, 2, 65546, 65514, 2, 65554, 65514, 2, 65557, 65514, 0, 65562, 65514, 2, 131067, 65514, 2, 131069, 65514, 2, 65536, 65515, 2, 65541, 65515, 2, 65545, 65515, 2, 131059, 65515, 536870914, 131064, 65515, 2, 131092, 65515, 1, 196592, 65515, 1, 196595, 65515, 1, 65527, 65516, 851969, 65553, 65516, 2, 65530, 65517, 851969, 65558, 65517, 0, 65569, 65517, 0, 131114, 65517, 1, 196583, 65517, 1, 9, 65518, 851969, 65532, 65518, 851969, 65554, 65518, 2, 131055, 65518, 2, 131080, 65518, 1, 131096, 65518, 1, 196574, 65518, 1, 196590, 65518, 1, 65577, 65519, 2, 131040, 65519, 2, 131059, 65519, 2, 131074, 65519, 1, 131088, 65519, 1, 16, 65521, 196608, 27, 65521, 851969, 29, 65521, 851969, 32, 65521, 851969, 65535, 65521, 851969, 131057, 65521, 2, 131058, 65521, 2, 196570, 65521, 1, 13, 65522, 196608, 65563, 65522, 0, 65565, 65522, 2, 65573, 65522, 2, 196576, 65522, 1, 196581, 65522, 1, 0, 65523, 851969, 13, 65523, 851969, 22, 65523, 196608, 65570, 65523, 0, 131053, 65523, 2, 131115, 65523, 1, 33, 65524, 537722881, 131072, 65524, 1, 196572, 65524, 1, 2, 65525, 851969, 12, 65525, 851969, 13, 65525, 851969, 65559, 65525, 2, 196587, 65525, 1, 3, 65526, 851969, 4, 65526, 851969, 8, 65526, 196608, 196570, 65526, 1, 33, 65527, 851969, 131051, 65527, 2, 131089, 65527, 1, 8, 65528, 0, 14, 65528, 851969, 65562, 65528, 2, 131055, 65528, 2, 131097, 65528, 1, 196605, 65528, 1, 11, 65529, 196608, 17, 65529, 851969, 32, 65529, 851969, 65527, 65529, 1048577, 65528, 65529, 1048577, 65571, 65529, 0, 131053, 65529, 2, 393238, 65529, 1, 9, 65530, 196608, 12, 65530, 196608, 65513, 65530, 851969, 65528, 65530, 1048577, 65574, 65530, 2, 131073, 65530, 1, 327705, 65530, 1, 327707, 65530, 1, 393239, 65530, 1, 8, 65531, 1, 12, 65531, 196608, 23, 65531, 196608, 65528, 65531, 1048577, 131056, 65531, 2, 327709, 65531, 1, 327710, 65531, 1, 393239, 65531, 1, 7, 65532, 1, 13, 65532, 196608, 65529, 65532, 1048577, 65561, 65532, 2, 131117, 65532, 1, 327711, 65532, 1, 393239, 65532, 1, 13, 65533, 196608, 16, 65533, 851969, 27, 65533, 851969, 65515, 65533, 851969, 65529, 65533, 1048577, 65576, 65533, 2, 327713, 65533, 1, 393239, 65533, 1, 7, 65534, 1, 12, 65534, 196608, 20, 65534, 851969, 65530, 65534, 1048577, 131050, 65534, 2, 327713, 65534, 1, 393243, 65534, 1, 7, 65535, 1, 17, 65535, 851969, 18, 65535, 196608, 65530, 65535, 1048577, 65561, 65535, 2, 196571, 65535, 1, 196603, 65535, 1, 327713, 65535, 1, 393243, 65535, 1 )
+"cells": PoolIntArray( 6, 0, 1, 22, 0, 851969, 24, 0, 851969, 65530, 0, 1048577, 65531, 0, 1048577, 65566, 0, 0, 131094, 0, 1, 327713, 0, 1, 393240, 0, 1, 393243, 0, 1, 14, 1, 196608, 65519, 1, 851969, 65531, 1, 1048577, 196580, 1, 1, 327712, 1, 1, 393244, 1, 1, 6, 2, 1, 14, 2, 196608, 65519, 2, 851969, 65531, 2, 1048577, 131063, 2, 2, 196607, 2, 1, 262170, 2, 1, 327711, 2, 1, 393242, 2, 1, 393243, 2, 1, 65532, 3, 1048577, 131051, 3, 2, 131052, 3, 2, 262170, 3, 1, 327710, 3, 1, 393243, 3, 1, 65532, 4, 1048577, 65568, 4, 2, 131064, 4, 2, 262171, 4, 1, 5, 5, 1, 131091, 5, 1, 131111, 5, 1, 262166, 5, 1, 262171, 5, 1, 262172, 5, 1, 5, 6, 1, 65574, 6, 2, 262167, 6, 1, 262169, 6, 1, 262170, 6, 1, 262171, 6, 1, 262172, 6, 1, 65582, 9, 0, 131119, 9, 1, 65563, 10, 0, 131098, 10, 1, 131111, 10, 1, 65562, 11, 2, 65563, 11, 0, 65578, 11, 2, 131119, 11, 0, 131119, 12, 0, 196575, 13, 1, 196605, 14, 1, 131045, 15, 2, 131048, 16, 2, 196586, 16, 1, 196603, 17, 1, 131044, 18, 2, 131072, 18, 1, 131087, 18, 1, 131096, 18, 0, 196561, 19, 1, 131096, 20, 0, 131099, 20, 1, 131027, 21, 2, 131108, 21, 1, 131118, 21, 0, 131030, 22, 2, 131032, 22, 2, 131095, 23, 0, 65571, 24, 2, 65576, 24, 0, 65578, 24, 0, 65582, 24, 0, 131045, 24, 2, 196570, 24, 1, 131041, 25, 2, 131044, 25, 2, 65562, 26, 2, 65571, 26, 0, 65562, 27, 2, 65567, 27, 2, 131034, 27, 2, 131037, 27, 2, 131040, 27, 2, 131041, 27, 2, 131109, 27, 1, 131041, 28, 2, 131076, 28, 1, 131090, 29, 0, 65579, 31, 2, 131072, 31, 1, 65568, 33, 2, 131102, 33, 1, 131114, 33, 0, 65560, 34, 0, 131084, 34, 0, 131048, 35, 2, 131094, 35, 1, 131080, 36, 0, 131098, 37, 1, 65552, 38, 0, 131044, 38, 2, 131112, 38, 0, 196569, 38, 1, 131114, 41, 0, 131087, 44, 1, 65582, 47, 2, 131092, 47, 1, 131111, 50, 0, 196562, 52, 1, 196550, 53, 1, 65509, 65499, 851969, 65510, 65499, 851969, 65507, 65501, 851969, 65513, 65501, 851969, 65506, 65502, 851969, 65505, 65503, 851969, 65504, 65504, 851969, 65508, 65504, 851969, 65509, 65505, 851969, 11, 65506, 196608, 65501, 65506, 851969, 65513, 65507, 851969, 65501, 65508, 851969, 65513, 65508, 851969, 65514, 65508, 851969, 196605, 65508, 1, 9, 65509, 196608, 16, 65509, 196608, 65515, 65509, 851969, 65522, 65509, 851969, 131082, 65510, 1, 13, 65511, 196608, 65518, 65511, 851969, 131045, 65511, 2, 131111, 65511, 1, 196579, 65511, 1, 196580, 65511, 1, 65521, 65512, 851969, 65557, 65512, 2, 131029, 65512, 2, 131030, 65512, 2, 131037, 65512, 2, 131052, 65512, 2, 131056, 65512, 2, 131105, 65512, 1, 196570, 65512, 1, 196582, 65512, 1, 65521, 65513, 851969, 65573, 65513, 2, 65575, 65513, 2, 131059, 65513, 2, 131061, 65513, 2, 131064, 65513, 2, 131104, 65513, 1, 131113, 65513, 1, 196570, 65513, 1, 10, 65514, 196608, 65500, 65514, 851969, 65522, 65514, 851969, 65526, 65514, 851969, 65527, 65514, 851969, 65536, 65514, 2, 65538, 65514, 2, 65541, 65514, 2, 65542, 65514, 2, 65544, 65514, 2, 65546, 65514, 2, 65554, 65514, 2, 65557, 65514, 0, 65562, 65514, 2, 131067, 65514, 2, 131069, 65514, 2, 65536, 65515, 2, 65541, 65515, 2, 65545, 65515, 2, 131059, 65515, 2, 131064, 65515, 2, 131092, 65515, 1, 196592, 65515, 1, 196595, 65515, 1, 65527, 65516, 851969, 65553, 65516, 2, 65530, 65517, 851969, 65558, 65517, 0, 65569, 65517, 0, 131114, 65517, 1, 196583, 65517, 1, 9, 65518, 851969, 65532, 65518, 851969, 65554, 65518, 2, 131055, 65518, 2, 131080, 65518, 1, 131096, 65518, 1, 196574, 65518, 1, 196590, 65518, 1, 65577, 65519, 2, 131040, 65519, 2, 131059, 65519, 2, 131074, 65519, 1, 131088, 65519, 1, 16, 65521, 196608, 27, 65521, 851969, 29, 65521, 851969, 32, 65521, 851969, 65535, 65521, 851969, 131057, 65521, 2, 131058, 65521, 2, 196570, 65521, 1, 13, 65522, 196608, 65563, 65522, 0, 65565, 65522, 2, 65573, 65522, 2, 196576, 65522, 1, 196581, 65522, 1, 0, 65523, 851969, 13, 65523, 851969, 22, 65523, 196608, 65570, 65523, 0, 131053, 65523, 2, 131115, 65523, 1, 33, 65524, 851969, 131072, 65524, 1, 196572, 65524, 1, 2, 65525, 851969, 12, 65525, 851969, 13, 65525, 851969, 65559, 65525, 2, 196587, 65525, 1, 3, 65526, 851969, 4, 65526, 851969, 8, 65526, 196608, 196570, 65526, 1, 33, 65527, 851969, 131051, 65527, 2, 131089, 65527, 1, 8, 65528, 0, 14, 65528, 851969, 65562, 65528, 2, 131055, 65528, 2, 131097, 65528, 1, 196605, 65528, 1, 11, 65529, 196608, 17, 65529, 851969, 32, 65529, 851969, 65527, 65529, 1048577, 65528, 65529, 1048577, 65571, 65529, 0, 131053, 65529, 2, 393238, 65529, 1, 9, 65530, 196608, 12, 65530, 196608, 65513, 65530, 851969, 65528, 65530, 1048577, 65574, 65530, 2, 131073, 65530, 1, 327705, 65530, 1, 327707, 65530, 1, 393239, 65530, 1, 8, 65531, 1, 12, 65531, 196608, 23, 65531, 196608, 65528, 65531, 1048577, 131056, 65531, 2, 327709, 65531, 1, 327710, 65531, 1, 393239, 65531, 1, 7, 65532, 1, 13, 65532, 196608, 65529, 65532, 1048577, 65561, 65532, 2, 131117, 65532, 1, 327711, 65532, 1, 393239, 65532, 1, 13, 65533, 196608, 16, 65533, 851969, 27, 65533, 851969, 65515, 65533, 851969, 65529, 65533, 1048577, 65576, 65533, 2, 327713, 65533, 1, 393239, 65533, 1, 7, 65534, 1, 12, 65534, 196608, 20, 65534, 851969, 65530, 65534, 1048577, 131050, 65534, 2, 327713, 65534, 1, 393243, 65534, 1, 7, 65535, 1, 17, 65535, 851969, 18, 65535, 196608, 65530, 65535, 1048577, 65561, 65535, 2, 196571, 65535, 1, 196603, 65535, 1, 327713, 65535, 1, 393243, 65535, 1 )
 }
 __meta__ = {
 "_editor_clip_": 0,
@@ -312,32 +313,26 @@ transform = Transform( 55.0269, 0, 0, 0, 0.213245, 0, 0, 0, 51.3612, 0, 0, 0 )
 [node name="MeshInstance" type="MeshInstance" parent="Room/Floor"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00097047, 0.411755, 9.96173e-05 )
 mesh = SubResource( 9 )
-material/0 = null
 
 [node name="MeshInstance2" type="MeshInstance" parent="Room/Floor"]
 transform = Transform( 0.0187893, 0, 0, 0, 84.2338, 0, 0, 0, 1, -0.943626, 39.7756, 0 )
 mesh = SubResource( 9 )
-material/0 = null
 
 [node name="MeshInstance3" type="MeshInstance" parent="Room/Floor"]
 transform = Transform( 0.0187893, 0, 0, 0, 84.2338, 0, 0, 0, 1, 0.98976, 39.7756, 0 )
 mesh = SubResource( 9 )
-material/0 = null
 
 [node name="MeshInstance4" type="MeshInstance" parent="Room/Floor"]
 transform = Transform( 0.000502695, 0, -0.999642, 0, 84.2338, 0, 0.0187826, 0, 0.0267542, -0.0496103, 39.7756, 0.909933 )
 mesh = SubResource( 9 )
-material/0 = null
 
 [node name="MeshInstance5" type="MeshInstance" parent="Room/Floor"]
 transform = Transform( 0.000183427, 0, -0.364757, 0, 84.2339, 0, 0.0187826, 0, 0.0267542, -0.592748, 45.4601, -0.865062 )
 mesh = SubResource( 9 )
-material/0 = null
 
 [node name="MeshInstance6" type="MeshInstance" parent="Room/Floor"]
 transform = Transform( 0.000334647, 0, -0.665468, 0, 84.234, 0, 0.0187826, 0, 0.0267542, 0.605986, 45.4601, -0.865062 )
 mesh = SubResource( 9 )
-material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="Room/Floor"]
 shape = SubResource( 10 )
@@ -362,92 +357,90 @@ shape = SubResource( 10 )
 transform = Transform( 0.000334647, 0, -0.665468, 0, 84.234, 0, 0.0187826, 0, 0.0267542, 0.605986, 45.4601, -0.865062 )
 shape = SubResource( 10 )
 
-[node name="Target" type="Spatial" parent="."]
-editor/display_folded = true
+[node name="My_Target" type="Spatial" parent="."]
 
-[node name="RigidBody" type="RigidBody" parent="Target"]
-editor/display_folded = true
+[node name="RigidBody" type="RigidBody" parent="My_Target"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.53674e-07, 6.3133, 14.7113 )
 script = ExtResource( 9 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Target/RigidBody"]
+[node name="CollisionShape" type="CollisionShape" parent="My_Target/RigidBody"]
 shape = SubResource( 11 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Target/RigidBody"]
+[node name="MeshInstance" type="MeshInstance" parent="My_Target/RigidBody"]
 mesh = SubResource( 13 )
-material/0 = null
 
-[node name="RigidBody4" type="RigidBody" parent="Target"]
-editor/display_folded = true
+[node name="RigidBody4" type="RigidBody" parent="My_Target"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.40936, 12.6433, 14.7113 )
 script = ExtResource( 9 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Target/RigidBody4"]
+[node name="CollisionShape" type="CollisionShape" parent="My_Target/RigidBody4"]
 shape = SubResource( 11 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Target/RigidBody4"]
+[node name="MeshInstance" type="MeshInstance" parent="My_Target/RigidBody4"]
 mesh = SubResource( 13 )
-material/0 = null
 
-[node name="RigidBody5" type="RigidBody" parent="Target"]
-editor/display_folded = true
+[node name="RigidBody5" type="RigidBody" parent="My_Target"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4306, 11.8887, 14.7113 )
 script = ExtResource( 9 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Target/RigidBody5"]
+[node name="CollisionShape" type="CollisionShape" parent="My_Target/RigidBody5"]
 shape = SubResource( 11 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Target/RigidBody5"]
+[node name="MeshInstance" type="MeshInstance" parent="My_Target/RigidBody5"]
 mesh = SubResource( 13 )
-material/0 = null
 
-[node name="RigidBody6" type="RigidBody" parent="Target"]
-editor/display_folded = true
+[node name="RigidBody6" type="RigidBody" parent="My_Target"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -21.121, 9.87246, 14.7113 )
 script = ExtResource( 9 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Target/RigidBody6"]
+[node name="CollisionShape" type="CollisionShape" parent="My_Target/RigidBody6"]
 shape = SubResource( 11 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Target/RigidBody6"]
+[node name="MeshInstance" type="MeshInstance" parent="My_Target/RigidBody6"]
 mesh = SubResource( 13 )
-material/0 = null
 
-[node name="RigidBody7" type="RigidBody" parent="Target"]
-editor/display_folded = true
+[node name="RigidBody7" type="RigidBody" parent="My_Target"]
 transform = Transform( 9.92705, 0, 0, 0, 7.04688, 0, 0, 0, 3.95448, -3.82239, 11.8575, 29.4924 )
 script = ExtResource( 9 )
 
-[node name="CollisionShape" type="CollisionShape" parent="Target/RigidBody7"]
+[node name="CollisionShape" type="CollisionShape" parent="My_Target/RigidBody7"]
 shape = SubResource( 11 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Target/RigidBody7"]
+[node name="MeshInstance" type="MeshInstance" parent="My_Target/RigidBody7"]
 mesh = SubResource( 13 )
-material/0 = null
 
-[node name="KinematicBody" type="RigidBody" parent="Target"]
+[node name="KinematicBody" type="RigidBody" parent="My_Target"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.21272, 4.25352, 15.0659 )
 script = ExtResource( 9 )
 
-[node name="MeshInstance" type="MeshInstance" parent="Target/KinematicBody"]
+[node name="MeshInstance" type="MeshInstance" parent="My_Target/KinematicBody"]
 mesh = ExtResource( 10 )
-material/0 = SubResource( 18 )
+material/0 = SubResource( 14 )
 
-[node name="CollisionShape2" type="CollisionShape" parent="Target/KinematicBody"]
+[node name="CollisionShape2" type="CollisionShape" parent="My_Target/KinematicBody"]
 transform = Transform( 1, 0, 0, 0, 2.75248, 0, 0, 0, 1, 0, 2.96547, -3.8147e-06 )
-shape = SubResource( 14 )
-
-[node name="RigidBody2" type="RigidBody" parent="Target"]
-editor/display_folded = true
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.20291, 6.02902, 10.5188 )
-
-[node name="MeshInstance" type="MeshInstance" parent="Target/RigidBody2"]
-mesh = ExtResource( 10 )
-material/0 = SubResource( 19 )
-
-[node name="CollisionShape" type="CollisionShape" parent="Target/RigidBody2"]
 shape = SubResource( 15 )
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 17 )
+[node name="RigidBody2" type="RigidBody" parent="My_Target"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.20291, 6.02902, 10.5188 )
+script = ExtResource( 9 )
 
+[node name="MeshInstance" type="MeshInstance" parent="My_Target/RigidBody2"]
+mesh = ExtResource( 10 )
+material/0 = SubResource( 16 )
+
+[node name="CollisionShape" type="CollisionShape" parent="My_Target/RigidBody2"]
+transform = Transform( 1, 0, 0, 0, 2.97721, 0, 0, 0, 1, 0, 2.80545, 0 )
+shape = SubResource( 17 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 19 )
+
+[node name="Ammo_Pickup" parent="." instance=ExtResource( 11 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.99448, 6.64611 )
+
+[node name="Health_Pickup" parent="." instance=ExtResource( 12 )]
+transform = Transform( -0.0748569, 0, 0.997194, 0, 1, 0, -0.997194, 0, -0.0748569, 8.96985, 6.34692, 0 )
+
+[node name="Circle_Target" parent="." instance=ExtResource( 13 )]
+transform = Transform( 0.845588, 0, -0.533836, 0, 1, 0, 0.533836, 0, 0.845588, -13.3932, 10.0676, 13.3582 )

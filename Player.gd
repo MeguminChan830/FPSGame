@@ -12,7 +12,10 @@ onready var camera= $Rotation_Helper/Camera
 onready var rotationHelper= $Rotation_Helper
 
 var mouse_scroll_value= 0
-var mouse_sesitivity= 0.08
+var mouse_sesitivity= 1
+
+const max_health=150
+
 
 
 var animation_manager
@@ -32,12 +35,29 @@ var reloading_weapon= false
 var fire= false
 var audio = load("res://Audio.tscn")
 
-
-
-
 onready var flash_light= $Rotation_Helper/FlashLight
 
 var sensitivity=0.1
+
+
+var grenade_amounts = {"Grenade": 2, "Sticky Grenade": 3}
+var current_grenade= "Grenade"
+var grenade_scene= preload("res://Grenade.tscn")
+var sticky_grenade_scene =preload("res://Sticky_Grenade.tscn")
+const grenade_throw_force= 50
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 func create_sound(name, position=null):
 	var audio_clone= audio.instance()
@@ -95,6 +115,7 @@ func process_input(delta):
 			if weapon_number_to_name[weapon_change_number]!=current_weapon_name:
 				changing_weapon_name= weapon_number_to_name[weapon_change_number]
 				changing_weapon=true
+				mouse_scroll_value= weapon_change_number
 				pass
 	if Input.is_action_pressed("fire"):
 		if changing_weapon==false:
@@ -111,7 +132,6 @@ func process_input(delta):
 		if changing_weapon ==false:
 			if Input.is_action_just_pressed("reload"):
 				var current_weapon= weapons[current_weapon_name]
-				print("Before: ", current_weapon.can_reload)
 				if current_weapon!=null:
 					if current_weapon.can_reload== true:
 						var current_ani_state= animation_manager.current_state
@@ -122,10 +142,27 @@ func process_input(delta):
 								if current_ani_state== weapon_node.RELOADING_ANI:
 									is_reloading=true
 						if is_reloading==false:
-							print("reload! R")
 							reloading_weapon=true
-
-
+	if Input.is_action_just_pressed("change_grenade"):
+		if current_grenade=="Grenade":
+			current_grenade="Sticky Grenade"
+		elif current_grenade =="Sticky Grenade":
+			current_grenade="Grenade"
+	if Input.is_action_just_pressed("fire_grenade"):
+		if grenade_amounts[current_grenade]>0:
+			grenade_amounts[current_grenade]-=1
+			var grenade_clone
+			if (current_grenade=="Grenade"):
+				grenade_clone= grenade_scene.instance()
+			elif (current_grenade=='Sticky Grenade'):
+				grenade_clone= sticky_grenade_scene.instance()
+				grenade_clone.player_body=self
+			get_tree().root.add_child(grenade_clone)
+			grenade_clone.global_transform= $Rotation_Helper/Grenade_Toss_Pos.global_transform
+			grenade_clone.apply_impulse(Vector3(0, 0, 0), grenade_clone.global_transform.basis.z*grenade_throw_force)
+			var sound= audio.instance()
+			get_tree().root.get_children()[0].add_child(sound)
+			sound.play_sound("bomb")
 
 
 
@@ -179,25 +216,29 @@ func process_movement(delta):
 	vel = move_and_slide(vel, Vector3(0, 1, 0), false, 4, deg2rad(maxSlopeAngle))
 	
 func _input(event):
-	if event.button_index== BUTTON_WHEEL_UP or event.button_index== BUTTON_WHEEL_DOWN:
-		if event.button_index == BUTTON_WHEEL_U:
-			mouse_scroll_value += mouse_sesitivity
-		elif event.button_index== BUTTON_WHEEL_DOWN:
-			mouse_scroll_value -= mouse_sesitivity
-		mouse_scroll_value = clamp(mouse_scroll_value, 0, weapon_number_to_name.size()-1)
-		if changing_weapon ==false:
-			if reloading_weapon ==false:
-				var round_mouse_scroll_value= int(round(mouse_scroll_value))
-				if weapon_number_to_name[round_mouse_scroll_value] != current_weapon_name:
-					changing_weapon_name = weapon_number_to_name[round_mouse_scroll_value]
-					changing_weapon= true
+	
+	if event is InputEventMouseButton:
+		if event.pressed:
+			if event.button_index == BUTTON_WHEEL_UP or event.button_index== BUTTON_WHEEL_DOWN:
+				if event.button_index == BUTTON_WHEEL_UP:
+					mouse_scroll_value += mouse_sesitivity
+				elif event.button_index== BUTTON_WHEEL_DOWN:
+					mouse_scroll_value -= mouse_sesitivity
+				mouse_scroll_value = clamp(mouse_scroll_value, 0, weapon_number_to_name.size()-1)
+				if changing_weapon ==false:
+					if reloading_weapon ==false:
+						var round_mouse_scroll_value= int(round(mouse_scroll_value))
+						if weapon_number_to_name[round_mouse_scroll_value] != current_weapon_name:
+							changing_weapon_name = weapon_number_to_name[round_mouse_scroll_value]
+							changing_weapon= true
+							mouse_scroll_value= round_mouse_scroll_value
 	if event is InputEventKey:
 		if event.scancode == KEY_ESCAPE:
 			get_tree().quit()
 		if event.scancode == KEY_Z:
 			if isVisible:
 				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-				isVisible=false
+				isVisible=false 
 		if event.scancode == KEY_X:
 			if !isVisible:
 				isVisible=true
@@ -247,12 +288,15 @@ func fire_bullet():
 
 func processUI():
 	if current_weapon_name=="unarmed" or current_weapon_name=="knife":
-		UI_status_label.text="Heath: "+ str(health)
+		UI_status_label.text="Heath: "+ str(health) +\
+		"\nGrenade: "+ str(grenade_amounts[current_grenade])
+		
 	else:
 		var current_weapon= weapons[current_weapon_name]
 		UI_status_label.text= "Heath: "+ str(health)
 		UI_status_label.text+= "\n Ammo: "+ str(current_weapon.ammo_in_weapon)
 		UI_status_label.text+="\n Spare ammo: "+ str(current_weapon.spare_ammo)
+
 
 
 func process_reloading(delta):
@@ -261,4 +305,16 @@ func process_reloading(delta):
 		if current_weapon != null:
 			current_weapon.reload_weapon()
 		reloading_weapon = false
+
+func add_health(add):
+	health+=add
+	health=clamp(health,0 ,max_health)
+
+func add_ammo(add):
+	if (current_weapon_name!= "unarmed"):
+		if (weapons[current_weapon_name].can_refill==true):
+			weapons[current_weapon_name].spare_ammo+=weapons[current_weapon_name].ammo_in_mag *add
+func _process(delta):
+	var fps = Engine.get_frames_per_second()
+	$HUD/FPS.text= "FPS: "+ str(fps)
 

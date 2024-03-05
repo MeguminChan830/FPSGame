@@ -11,4 +11,3 @@ stream = ExtResource( 2 )
 autoplay = true
 
 [node name="test" type="Spatial" parent="."]
-

@@ -15,5 +15,3 @@ shape = SubResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="KinematicBody"]
 mesh = ExtResource( 1 )
-material/0 = null
-

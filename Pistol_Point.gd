@@ -9,6 +9,8 @@ var spare_ammo = 6
 var ammo_in_mag = 3
 var can_reload = true
 var is_reloading = false
+var can_refill= true
+
 
 const RELOADING_ANI = "Pistol_reload"
 
