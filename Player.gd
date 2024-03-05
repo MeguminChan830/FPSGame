@@ -40,7 +40,7 @@ onready var flash_light= $Rotation_Helper/FlashLight
 var sensitivity=0.1
 
 
-var grenade_amounts = {"Grenade": 2, "Sticky Grenade": 3}
+var grenade_amounts = {"Grenade": 99, "Sticky Grenade": 99}
 var current_grenade= "Grenade"
 var grenade_scene= preload("res://Grenade.tscn")
 var sticky_grenade_scene =preload("res://Sticky_Grenade.tscn")
@@ -48,11 +48,18 @@ const grenade_throw_force= 50
 
 
 
+var grabbed_object =null
+const object_throw_force= 120
+const object_grab_distance=20
+var tmp_parent=null
+const object_grab_ray_distance=20
 
 
 
 
 
+
+	
 
 
 
@@ -93,8 +100,10 @@ func _ready():
 func _physics_process(delta):
 	process_input(delta)
 	process_movement(delta)
-	process_changing_weapon(delta)
-	process_reloading(delta)
+	if grabbed_object==null:
+		
+		process_changing_weapon(delta)
+		process_reloading(delta)
 	processUI()
 
 func process_input(delta):
@@ -128,6 +137,8 @@ func process_input(delta):
 							fire_bullet()
 					else:
 						reloading_weapon=true
+
+
 	if !reloading_weapon:
 		if changing_weapon ==false:
 			if Input.is_action_just_pressed("reload"):
@@ -164,6 +175,39 @@ func process_input(delta):
 			get_tree().root.get_children()[0].add_child(sound)
 			sound.play_sound("bomb")
 
+	if Input.is_action_just_pressed("fire") and current_weapon_name =='unarmed':
+		if grabbed_object ==null:
+			var state= get_world().direct_space_state
+			var center_position = get_viewport().size/2
+			var ray_from= camera.project_ray_origin(center_position)
+			var ray_to=  ray_from + camera.project_local_ray_normal(center_position)* object_grab_ray_distance
+			var ray_result=state.intersect_ray(ray_from,ray_from -camera.global_transform.basis.z.normalized()*object_grab_distance, [self, $Rotation_Helper/Gun_Fire_Points/Knife_Point/Area])
+			if ray_result:
+				if ray_result["collider"] is RigidBody:
+					grabbed_object = ray_result['collider']
+					grabbed_object.mode=RigidBody.MODE_STATIC
+					grabbed_object.collision_layer= 0
+					grabbed_object.collision_mask=0
+					var grab_g= grabbed_object.global_transform
+					tmp_parent= grabbed_object.get_parent()
+					grabbed_object.get_parent().remove_child(grabbed_object)
+					add_child(grabbed_object)
+					grabbed_object.global_transform= grab_g
+					
+		else:
+			grabbed_object.mode=RigidBody.MODE_RIGID
+			grabbed_object.apply_impulse(Vector3(0, 0, 0), -camera.global_transform.basis.z*object_throw_force)
+
+			grabbed_object.collision_layer=1
+			grabbed_object.collision_mask =1
+			
+			var grab_g= grabbed_object.global_transform
+			remove_child(grabbed_object)
+			tmp_parent.add_child(grabbed_object)
+			grabbed_object.global_transform=grab_g
+			grabbed_object=null
+	if grabbed_object!=null:
+		grabbed_object.global_transform.origin= camera.global_transform.origin+ (-camera.global_transform.basis.z.normalized()*object_grab_distance)
 
 
 	dir = Vector3()
@@ -197,7 +241,6 @@ func process_movement(delta):
 	dir.y=0
 	dir = dir.normalized()
 	if jumping:
-
 		vel.y-=1.5
 	else:
 		vel.y=-gravity

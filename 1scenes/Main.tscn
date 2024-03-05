@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://GodotBatlleBot.scn" type="PackedScene" id=2]
@@ -74,6 +74,9 @@ albedo_color = Color( 0.317647, 0.894118, 0.156863, 1 )
 [sub_resource type="CubeMesh" id=13]
 material = SubResource( 12 )
 
+[sub_resource type="ConvexPolygonShape" id=20]
+points = PoolVector3Array( 1, 1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, -1, -1, -1, 1, -1, -1, -1, 1, -1, -1, -1 )
+
 [sub_resource type="SpatialMaterial" id=14]
 albedo_color = Color( 0, 1, 0.368627, 1 )
 roughness = 0.0
@@ -121,6 +124,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0 )
 
 [node name="Camera" type="Camera" parent="Player/Rotation_Helper"]
 transform = Transform( -1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, 0 )
+far = 200.0
 
 [node name="Model" parent="Player/Rotation_Helper" instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, 0 )
@@ -400,14 +404,16 @@ shape = SubResource( 11 )
 mesh = SubResource( 13 )
 
 [node name="RigidBody7" type="RigidBody" parent="My_Target"]
-transform = Transform( 9.92705, 0, 0, 0, 7.04688, 0, 0, 0, 3.95448, -3.82239, 11.8575, 29.4924 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.56555, 9.87246, 14.7113 )
 script = ExtResource( 9 )
 
-[node name="CollisionShape" type="CollisionShape" parent="My_Target/RigidBody7"]
-shape = SubResource( 11 )
-
 [node name="MeshInstance" type="MeshInstance" parent="My_Target/RigidBody7"]
+transform = Transform( 4.36713, 0, 0, 0, 4.36713, 0, 0, 0, 4.36713, 0, 4.08706, 7.41562 )
 mesh = SubResource( 13 )
+
+[node name="CollisionShape" type="CollisionShape" parent="My_Target/RigidBody7"]
+transform = Transform( 4.36713, 0, 0, 0, 4.36713, 0, 0, 0, 4.36713, 0, 4.08706, 7.41562 )
+shape = SubResource( 20 )
 
 [node name="KinematicBody" type="RigidBody" parent="My_Target"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.21272, 4.25352, 15.0659 )

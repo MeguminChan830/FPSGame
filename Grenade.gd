@@ -21,10 +21,9 @@ func _ready():
 
 	explosion_particles.emitting=false
 	explosion_particles.one_shot=true
-	print("Init")
+
 
 func _process(delta):
-	print("Perocess")
 	
 	if timer<time:
 		timer+=delta

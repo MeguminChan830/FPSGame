@@ -36,7 +36,6 @@ func trigger_body_entered(body):
 		kit_size_change_values(kit_size, false)
 
 func kit_size_change_values(size, enable):
-	print(enable)
 	if size==0:
 		$Holder/Ammo_Pickup_Trigger/Shape_Kit.disabled=!enable
 		$Holder/Ammo_Kit.visible=enable

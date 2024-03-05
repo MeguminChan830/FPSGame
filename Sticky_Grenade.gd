@@ -39,6 +39,7 @@ func collied_with_body(body):
 		attach_point=Spatial.new()
 		body.add_child(attach_point)
 		attach_point.global_transform.origin=global_transform.origin
+		print("attached")
 		rigid_shape.disabled=true
 		mode=RigidBody.MODE_STATIC
 

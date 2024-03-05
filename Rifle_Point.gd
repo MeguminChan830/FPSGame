@@ -26,9 +26,7 @@ func fireWeapon():
 	ray.force_raycast_update()
 	if ray.is_colliding():
 		var body= ray.get_collider()
-		print(body.name)
 		if body==playerNode:
-			print("I Am player")
 			pass
 		elif body.has_method("bullet_hit"):
 			body.bullet_hit(damage, ray.global_transform)
