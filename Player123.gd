@@ -1,9 +1,11 @@
 extends KinematicBody
 
-const gravity=  30
-var vel = Vector3(0, 0,0 )
-const maxSpeed= 30
-const jumpSpeed= 42
+const gravity=  9.8*3
+var fall:float=gravity
+const maxSpeed= 25
+var vel= Vector3.ZERO
+const jumpSpeed= 700
+
 const accel= 4.5
 var dir=Vector3()
 const deaccel= 16
@@ -12,9 +14,11 @@ onready var camera= $Rotation_Helper/Camera
 onready var rotationHelper= $Rotation_Helper
 
 var mouse_scroll_value= 0
-var mouse_sesitivity=1
+var mouse_sesitivity= 1
 
-const max_health=2000000
+const max_health=150
+
+
 
 var animation_manager
 var current_weapon_name= "unarmed"
@@ -25,7 +29,7 @@ const weapon_name_to_number = {"unarmed": 0, "knife": 1, "pistol": 2, "rifle": 3
 var isVisible= true
 var changing_weapon=false
 var changing_weapon_name="unarmed"
-var health=max_health
+var health=100
 var UI_status_label
 var jumping=false
 var reloading_weapon= false
@@ -36,6 +40,7 @@ var audio = load("res://Audio.tscn")
 onready var flash_light= $Rotation_Helper/FlashLight
 
 var sensitivity=0.1
+
 
 var grenade_amounts = {"Grenade": 99, "Sticky Grenade": 99}
 var current_grenade= "Grenade"
@@ -52,10 +57,8 @@ var tmp_parent=null
 const object_grab_ray_distance=20
 
 
-const respawn_time=4
-var dead_time=0
-var is_dead=false
-var globals
+
+
 
 
 	
@@ -66,15 +69,13 @@ var globals
 
 
 func create_sound(name, position=null):
-	# var audio_clone= audio.instance()
-	# var scene_root= get_tree().root.get_children()[0]
-	# scene_root.add_child(audio_clone)
-	# audio_clone.play_sound(name, position)
-	globals.play_sound(name, false, position)
+	var audio_clone= audio.instance()
+	var scene_root= get_tree().root.get_children()[0]
+	scene_root.add_child(audio_clone)
+	audio_clone.play_sound(name, position)
 
 func _ready():
-	globals= get_tree().root.get_children()[0]
-	sensitivity= globals.mouse_sensitivity
+	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	animation_manager= $Rotation_Helper/Model/AnimationPlayer
 	animation_manager.callbackFunc= funcref(self, "fire_bullet")
@@ -100,14 +101,13 @@ func _ready():
 	
 
 func _physics_process(delta):
-	if !is_dead:
-		process_input(delta)
-		process_movement(delta)
+	process_movement(delta)
+	process_input(delta)
+
 	if grabbed_object==null:
 		process_changing_weapon(delta)
 		process_reloading(delta)
 	processUI()
-	process_respawn(delta)
 
 func process_input(delta):
 	var weapon_change_number =weapon_name_to_number[current_weapon_name]
@@ -174,7 +174,9 @@ func process_input(delta):
 			get_tree().root.add_child(grenade_clone)
 			grenade_clone.global_transform= $Rotation_Helper/Grenade_Toss_Pos.global_transform
 			grenade_clone.apply_impulse(Vector3(0, 0, 0), grenade_clone.global_transform.basis.z*grenade_throw_force)
-			create_sound("bomb", grenade_clone.global_transform.origin)
+			var sound= audio.instance()
+			get_tree().root.get_children()[0].add_child(sound)
+			sound.play_sound("bomb")
 
 	if Input.is_action_just_pressed("fire") and current_weapon_name =='unarmed':
 		if grabbed_object ==null:
@@ -232,8 +234,11 @@ func process_input(delta):
 			jumping= true
 		else: 
 			jumping = false
-		# if Input.get_mouse_mode()== Input.MOUSE_MODE_VISIBLE:
-		# 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		if Input.is_action_just_pressed("ui_cancel"):
+			if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			else:
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 				
 func process_movement(delta):
 	dir.y=0
@@ -256,20 +261,27 @@ func process_movement(delta):
 	vel.z = hvel.z
 	vel = move_and_slide(vel, Vector3(0, 1, 0), false, 4, deg2rad(maxSlopeAngle))
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 func _input(event):
-	if event is InputEventKey:
-		if event.scancode == KEY_ESCAPE:
-			get_tree().quit()
-		if event.scancode == KEY_Z:
-			if isVisible:
-				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-				isVisible=false 
-		if event.scancode == KEY_X:
-			if !isVisible:
-				isVisible=true
-				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	if is_dead:
-		return
+	
 	if event is InputEventMouseButton:
 		if event.pressed:
 			if event.button_index == BUTTON_WHEEL_UP or event.button_index== BUTTON_WHEEL_DOWN:
@@ -285,7 +297,17 @@ func _input(event):
 							changing_weapon_name = weapon_number_to_name[round_mouse_scroll_value]
 							changing_weapon= true
 							mouse_scroll_value= round_mouse_scroll_value
-
+	if event is InputEventKey:
+		if event.scancode == KEY_ESCAPE:
+			get_tree().quit()
+		if event.scancode == KEY_Z:
+			if isVisible:
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+				isVisible=false 
+		if event.scancode == KEY_X:
+			if !isVisible:
+				isVisible=true
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 			
 	if event is InputEventMouseMotion and Input.get_mouse_mode()== Input.MOUSE_MODE_CAPTURED:
@@ -300,34 +322,28 @@ func process_changing_weapon(delta):
 	if changing_weapon ==true:
 		var weapon_unequipped= false
 		var current_weapon =weapons[current_weapon_name]
-		if current_weapon!=null:
+		if current_weapon==null:
+			current_weapon= weapons[changing_weapon_name]
+		if true:
 			if current_weapon.isWeaponEnabled== true:
-					weapon_unequipped =current_weapon.unequipWeapon()
+				weapon_unequipped =current_weapon.unequipWeapon()
 			else:
-				if weapons[changing_weapon_name]==null:
-					current_weapon= weapons[changing_weapon_name]
-				else:
-					weapon_unequipped=true
-				
-		else:
-			weapon_unequipped=true
-		
+				weapon_unequipped =true
+			if weapon_unequipped==true:
+				var weapon_equipped= false
+				var weapon_to_equip =weapons[changing_weapon_name]
 
-		if weapon_unequipped==true:
-			var weapon_equipped= false
-			var weapon_to_equip =weapons[changing_weapon_name]
-
-			if weapon_to_equip == null:
-				weapon_equipped = true
-			else:
-				if weapon_to_equip.isWeaponEnabled==false:
-					weapon_equipped = weapon_to_equip.equipWeapon()
+				if weapon_to_equip == null:
+					weapon_equipped = true
 				else:
-					weapon_equipped= true
-			if weapon_equipped == true:
-				changing_weapon =false
-				current_weapon_name= changing_weapon_name
-				changing_weapon_name= ""
+					if weapon_to_equip.isWeaponEnabled==false:
+						weapon_equipped = weapon_to_equip.equipWeapon()
+					else:
+						weapon_equipped= true
+				if weapon_equipped == true:
+					changing_weapon =false
+					current_weapon_name= changing_weapon_name
+					changing_weapon_name= ""
 
 
 func fire_bullet():
@@ -369,52 +385,19 @@ func _process(delta):
 	
 func bullet_hit(damage, bullet_hit_pos):
 	health-=damage
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
-func process_respawn(delta):
-	if health<=0 and !is_dead:
-		$Body_CollisionShape.disabled=true
-		$Feet_CollisionShape.disabled=true
-
-		changing_weapon=true
-		changing_weapon_name="unarmed"
-
-		$HUD/Dead_Screen.visible=true
-		$HUD/Panel.visible=false
-		$HUD/Cross_Hair.visible=false
-		dead_time=respawn_time
-		is_dead=true
-		
-		if grabbed_object!=null:
-			grabbed_object.mode= RigidBody.MODE_RIGID
-			grabbed_object.apply_impulse(Vector3(0,0,0), -camera.global_transform.basis.z.normalized()*object_throw_force/2.0)
-
-			grabbed_object.collision_layer=1
-			grabbed_object.collision_mask=1
-
-			grabbed_object=null
-
-	if is_dead:
-		dead_time-=delta
-		var dead_time_pretty = str(dead_time).left(3)
-		$HUD/Dead_Screen/Label.text="You died\n"+ dead_time_pretty + " seconds till respawn"
-
-		if dead_time<=0:
-			global_transform.origin= globals.get_respawn_position()
-
-			$Body_CollisionShape.disabled=false
-			$Feet_CollisionShape.disabled=false
-
-			$HUD/Dead_Screen.visible=false
-			$HUD/Panel.visible=true
-			$HUD/Cross_Hair.visible=true
-
-			for weapon in weapons:
-				var weapon_node= weapons[weapon]
-				if weapon_node !=null:
-					weapon_node.reset_weapon()
-			health=100
-			grenade_amounts={"Grenade": 2 , "Sticky Grenade": 2}
-			current_grenade="Grenade"
-
-			is_dead=false
-
+	

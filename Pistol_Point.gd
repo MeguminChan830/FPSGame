@@ -78,3 +78,6 @@ func reload_weapon():
 	can_reload = true
 	return false
 	
+func reset_weapon():
+	ammo_in_weapon=10
+	spare_ammo=20

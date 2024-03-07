@@ -19,7 +19,7 @@ var node_raycast:RayCast=null
 var node_flash_one:MeshInstance=null
 var node_flash_two:MeshInstance=null
 
-const ammo_in_full_turret=3
+const ammo_in_full_turret=20
 var ammo_in_turret=ammo_in_full_turret
 
 const ammo_reload_time=4

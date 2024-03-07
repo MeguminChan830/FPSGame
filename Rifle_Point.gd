@@ -1,6 +1,6 @@
 extends Spatial
 
-const damage= 40
+const damage= 4
 const idle_ani = "Rifle_idle"
 const fire_ani = "Rifle_fire"
 const name_weapon="rifle"
@@ -71,3 +71,6 @@ func reload_weapon():
 
 
 
+func reset_weapon():
+	ammo_in_weapon = 50
+	spare_ammo = 100

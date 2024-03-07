@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://GodotBatlleBot.scn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Knifle_Point.gd" type="Script" id=5]
 [ext_resource path="res://32-32_white.png" type="Texture" id=6]
 [ext_resource path="res://fonts/PixelifySans-Regular.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://1scenes/Respawn.gd" type="Script" id=8]
 [ext_resource path="res://RigidBodyTest.gd" type="Script" id=9]
 [ext_resource path="res://models/enemy.obj" type="ArrayMesh" id=10]
 [ext_resource path="res://Ammo_Pickup.tscn" type="PackedScene" id=11]
@@ -115,6 +116,7 @@ adjustment_contrast = 1.04
 adjustment_saturation = 1.04
 
 [node name="Main" type="Spatial"]
+script = ExtResource( 8 )
 
 [node name="Player" type="KinematicBody" parent="."]
 script = ExtResource( 1 )
@@ -177,13 +179,13 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.266 )
 margin_right = 40.0
 margin_bottom = 40.0
 
-[node name="Crosshair" type="Control" parent="Player/HUD"]
+[node name="Cross_Hair" type="Control" parent="Player/HUD"]
 margin_left = 493.0
 margin_top = 279.631
 margin_right = 533.0
 margin_bottom = 319.631
 
-[node name="Top" type="TextureRect" parent="Player/HUD/Crosshair"]
+[node name="Top" type="TextureRect" parent="Player/HUD/Cross_Hair"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -195,7 +197,7 @@ margin_bottom = -3.5
 texture = ExtResource( 6 )
 expand = true
 
-[node name="Left" type="TextureRect" parent="Player/HUD/Crosshair"]
+[node name="Left" type="TextureRect" parent="Player/HUD/Cross_Hair"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -207,7 +209,7 @@ margin_bottom = 18.3223
 texture = ExtResource( 6 )
 expand = true
 
-[node name="Right" type="TextureRect" parent="Player/HUD/Crosshair"]
+[node name="Right" type="TextureRect" parent="Player/HUD/Cross_Hair"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -220,7 +222,7 @@ rect_rotation = 90.0098
 texture = ExtResource( 6 )
 expand = true
 
-[node name="Bottom" type="TextureRect" parent="Player/HUD/Crosshair"]
+[node name="Bottom" type="TextureRect" parent="Player/HUD/Cross_Hair"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -264,13 +266,14 @@ custom_styles/normal = SubResource( 7 )
 text = "Health: 100
 Ammo: 000/000 "
 
-[node name="DeathScreen" type="ColorRect" parent="Player/HUD"]
+[node name="Dead_Screen" type="ColorRect" parent="Player/HUD"]
 visible = false
 margin_right = 1024.0
 margin_bottom = 598.0
+rect_scale = Vector2( 0.996732, 1.00532 )
 color = Color( 0.482353, 0.337255, 0.337255, 1 )
 
-[node name="Label" type="Label" parent="Player/HUD/DeathScreen"]
+[node name="Label" type="Label" parent="Player/HUD/Dead_Screen"]
 margin_left = 419.54
 margin_top = 276.41
 margin_right = 479.46

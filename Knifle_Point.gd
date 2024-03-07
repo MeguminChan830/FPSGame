@@ -55,7 +55,9 @@ func unequipWeapon():
 
 func reload_weapon():
 	return false
-
+func reset_weapon():
+	ammo_in_weapon = 1
+	spare_ammo = 1
 
 
 
